@@ -31,6 +31,7 @@ dots.tts achieves the best average performance on **Seed-TTS-Eval**, with WERs o
   - [Web Demo (Gradio)](#web-demo-gradio)
   - [Fine-tuning](#fine-tuning)
   - [MeanFlow Distillation](#meanflow-distillation)
+- [Usage Tips](#-usage-tips)
 - [Architecture](#-architecture)
 - [Performance](#-performance)
   - [Seed-TTS-Eval](#seed-tts-eval)
@@ -132,14 +133,6 @@ Notes:
 - `--prompt-audio` selects the speaker voice — continuation cloning when paired with `--prompt-text`, x-vector-only cloning when used alone. Omitting `--prompt-audio` falls back to random-voice sampling, which is only meaningful on a fine-tuned single-speaker checkpoint.
 - `--language` is useful for multilingual or code-switched text when you want to force the model-side language tag. For example, pass `--language EN` for English, `--language ZH` for Mandarin, `--language Cantonese` for Cantonese, or `--language auto_detect` to infer the tag from `--text`.
 - Pass either a local model directory or a Hugging Face repo id.
-
-Tips for voice cloning:
-
-- **Keep the reference audio around 10s**. Longer audio won't yield better results.
-- **`--prompt-text` should match what's actually spoken in the reference audio**. Mismatches degrade stability and may cause word-level errors.
-- **Higher-quality references give better clones** — prefer a high sample rate, low background noise, no trailing noise, and natural-sounding speech.
-- **Try different `--seed` values for prosody variation**. Each seed produces a different rhythm and intonation — resample a few times if the default doesn't feel right.
-- **Increase `--num-steps` if quality isn't good enough**. More sampling steps trade compute for cleaner output and better expressiveness.
 
 ### Python API
 
@@ -266,6 +259,17 @@ Common MeanFlow flags:
 | `--distill-cfg-scale` | Extra CFG coefficient used when `--cfg-distill-mode fused` is enabled. It matches inference `guidance_scale` semantics: `teacher_cond + scale * (teacher_cond - teacher_uncond)`. | `1.2` |
 | `--anchor-prob` | Probability of using a zero-duration anchor sample in MeanFlow training. | `0.5` |
 | `--debug` | Print the first few batch summaries and gradient diagnostics. | off |
+
+---
+
+## 💡 Usage Tips
+
+- **Keep the reference audio around 10s**. Longer audio won't yield better results.
+- **`--prompt-text` should match what's actually spoken in the reference audio**. Mismatches degrade stability and may cause word-level errors.
+- **Higher-quality references give better clones** — prefer a high sample rate, low background noise, no trailing noise, and natural-sounding speech.
+- **Try different `--seed` values for prosody variation**. Each seed produces a different rhythm and intonation — resample a few times if the default doesn't feel right.
+- **Increase `--num-steps` if quality isn't good enough**. More sampling steps trade compute for cleaner output and better expressiveness.
+- **Force a pronunciation with Pinyin for polyphones.** Replace the character in the input text with its tone-marked pinyin — e.g. write `我生平不hào此道` to force `好` to be read as `hào`. Use tone-marked pinyin only (`hǎo`, `hào`, `bā`); numbered forms like `hao4` or `ha4o` are **not** recognized. Useful when reseeding doesn't fix a polyphone misread.
 
 ---
 
