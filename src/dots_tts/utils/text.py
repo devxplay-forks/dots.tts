@@ -6,8 +6,31 @@ from typing import Literal
 
 from langcodes import Language as LangcodesLanguage
 from lingua import Language, LanguageDetectorBuilder
-from tn.chinese.normalizer import Normalizer as ZhNormalizer
-from tn.english.normalizer import Normalizer as EnNormalizer
+try:
+    from wetext import Normalizer as WeTextNormalizer
+
+    class ZhNormalizer:
+        def __init__(self):
+            self.normalizer = WeTextNormalizer(lang="zh", operator="tn")
+        def normalize(self, text: str) -> str:
+            return self.normalizer.normalize(text)
+
+    class EnNormalizer:
+        def __init__(self):
+            self.normalizer = WeTextNormalizer(lang="en", operator="tn")
+        def normalize(self, text: str) -> str:
+            return self.normalizer.normalize(text)
+except ImportError:
+    try:
+        from tn.chinese.normalizer import Normalizer as ZhNormalizer
+        from tn.english.normalizer import Normalizer as EnNormalizer
+    except ImportError:
+        class ZhNormalizer:
+            def normalize(self, text: str) -> str:
+                return text
+        class EnNormalizer:
+            def normalize(self, text: str) -> str:
+                return text
 
 TextLanguage = Literal["zh", "en", "unknown"]
 

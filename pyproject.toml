@@ -52,7 +52,7 @@ dependencies = [
     "torchdiffeq",
     "tqdm",
     "lingua-language-detector",
-    "WeTextProcessing",
+    "wetext",
 ]
 
 [project.optional-dependencies]
